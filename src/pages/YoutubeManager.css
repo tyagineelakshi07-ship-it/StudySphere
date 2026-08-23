@@ -1,0 +1,136 @@
+.youtube-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: #0f0b1a;
+  color: white;
+}
+
+/* Header */
+
+.youtube-header {
+  margin-bottom: 30px;
+}
+
+.youtube-header h1 {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.youtube-header p {
+  color: #aaa;
+  font-size: 16px;
+}
+
+
+/* Add Video Box */
+
+.add-video-box {
+  background: #1b152b;
+  padding: 25px;
+  border-radius: 18px;
+  width: 90%;
+  max-width: 700px;
+  margin-bottom: 40px;
+  border: 1px solid #342653;
+}
+
+.add-video-box h2 {
+  margin-bottom: 20px;
+}
+
+.add-video-box label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  color: #cfc3ff;
+}
+
+.add-video-box input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid #4b3b70;
+  background: #100c19;
+  color: white;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.add-video-box button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  background: #7c4dff;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+
+/* Videos */
+
+.videos-section h2 {
+  margin-bottom: 20px;
+}
+
+.video-card {
+  width: 90%;
+  max-width: 850px;
+  background: #1b152b;
+  border: 1px solid #342653;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.video-icon {
+  width: 55px;
+  height: 55px;
+  background: #7c4dff;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+}
+
+.video-info {
+  flex: 1;
+}
+
+.video-info h3 {
+  margin: 0 0 6px 0;
+}
+
+.video-info p {
+  margin: 0;
+  color: #aaa;
+}
+
+
+/* Status */
+
+.video-status {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+}
+
+.not-watched {
+  background: #302641;
+  color: #cfc3ff;
+}
+
+.completed {
+  background: #203b32;
+  color: #7ee2b8;
+}

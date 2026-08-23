@@ -271,3 +271,21 @@
   left: 20%;
   font-size: 19px;
 }
+
+.video-status {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+}
+
+.not-watched {
+  background: #302641;
+  color: #cfc3ff;
+}
+
+.completed {
+  background: #203b32;
+  color: #7ee2b8;
+}

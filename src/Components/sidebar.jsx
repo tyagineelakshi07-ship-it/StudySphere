@@ -44,6 +44,7 @@ function Sidebar() {
           <Timer size={17} />
           <p>Pomodoro</p>
         </Link>
+
         <div className="nav-item">
           <ListTodo size={17} />
           <p>Todo List</p>
@@ -54,10 +55,11 @@ function Sidebar() {
           <p>Quiz Generator</p>
         </div>
 
-        <div className="nav-item">
+        {/* YouTube Manager */}
+        <Link to="/youtube" className="nav-item">
           <PlaySquare size={17} />
           <p>YouTube Manager</p>
-        </div>
+        </Link>
 
         <div className="nav-item">
           <ChartNoAxesColumn size={17} />

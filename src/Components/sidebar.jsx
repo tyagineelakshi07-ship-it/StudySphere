@@ -10,7 +10,6 @@ import {
   ChartNoAxesColumn,
   Settings,
   Info,
-  Mail,
   ChevronDown,
   Sparkles
 } from "lucide-react";
@@ -72,11 +71,6 @@ function Sidebar() {
         <Link to="/about" className="nav-item">
           <Info size={17} />
           <p>About Us</p>
-        </Link>
-
-        <Link to="/contact" className="nav-item">
-          <Mail size={17} />
-          <p>Contact</p>
         </Link>
 
       </nav>

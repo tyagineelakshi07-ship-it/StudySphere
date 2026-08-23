@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Notes from "./pages/Notes.jsx";
 import Sidebar from "./Components/sidebar";
 import Home from "./pages/Home.jsx";
@@ -13,7 +13,7 @@ import "./App.css";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="app">
         <Sidebar />
 
@@ -31,7 +31,7 @@ function App() {
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

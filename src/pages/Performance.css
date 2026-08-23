@@ -1,0 +1,852 @@
+/* ========================================= */
+/* PERFORMANCE PAGE                          */
+/* ========================================= */
+
+.performance-page {
+  width: 100%;
+
+  max-width: 1400px;
+
+  margin: 0 auto;
+}
+
+
+/* ========================================= */
+/* HEADER                                    */
+/* ========================================= */
+
+.performance-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 28px;
+}
+
+.performance-header h1 {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+  color: #f5f3ff;
+  margin-bottom: 10px;
+
+  /* subtle purple glow */
+  text-shadow: 0 0 25px rgba(139, 92, 246, 0.18);
+}
+.performance-header p {
+  color: #8b96b2;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.1px;
+  line-height: 1.6;
+}
+
+
+/* ========================================= */
+/* REPORT BUTTON                             */
+/* ========================================= */
+
+.report-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #6847e8,
+      #8b5cf6
+    );
+
+  color: white;
+
+  border: none;
+
+  padding: 11px 18px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+
+  box-shadow:
+    0 0 18px rgba(124, 92, 246, 0.25);
+
+  transition: 0.2s;
+}
+
+.report-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 0 25px rgba(124, 92, 246, 0.40);
+}
+
+
+/* ========================================= */
+/* STATISTICS                                */
+/* ========================================= */
+
+.stats-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+
+.stat-card {
+  width: 25%;
+  background:
+    linear-gradient(
+      145deg,
+      #0d1428,
+      #0a1020
+    );
+
+  border: 1px solid #1b2543;
+
+  border-radius: 12px;
+
+  padding: 19px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.20);
+
+  transition: 0.2s;
+}
+
+.stat-card:hover {
+  border-color: #5540b5;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 30px rgba(83, 64, 181, 0.15);
+}
+
+.stat-card p {
+  color: #8995b5;
+
+  font-size: 12px;
+
+  margin-bottom: 10px;
+}
+
+.stat-card h2 {
+  font-size: 27px;
+
+  margin-bottom: 7px;
+
+  color: #ffffff;
+}
+
+.stat-card span {
+  color: #71809f;
+
+  font-size: 11px;
+}
+
+.stat-card .positive {
+  color: #a78bfa;
+}
+
+
+/* ========================================= */
+/* GENERAL PERFORMANCE CARDS                 */
+/* ========================================= */
+
+.performance-card {
+  background:
+    linear-gradient(
+      145deg,
+      #0d1428,
+      #0a1020
+    );
+
+  border: 1px solid #1b2543;
+
+  border-radius: 13px;
+
+  padding: 22px;
+
+  margin-bottom: 20px;
+
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.20);
+}
+
+
+/* ========================================= */
+/* CARD HEADING                              */
+/* ========================================= */
+
+.card-heading {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 22px;
+}
+
+.card-heading h2 {
+  font-size: 17px;
+
+  margin-bottom: 5px;
+
+  color: #ffffff;
+}
+
+.card-heading p {
+  color: #7785a5;
+
+  font-size: 12px;
+}
+
+.card-heading select {
+  padding: 8px 11px;
+
+  border: 1px solid #293452;
+
+  border-radius: 7px;
+
+  background: #0b1224;
+
+  color: #cbd5e1;
+
+  outline: none;
+
+  font-size: 11px;
+}
+
+
+/* ========================================= */
+/* CHART                                     */
+/* ========================================= */
+
+.chart {
+  display: flex;
+
+  height: 260px;
+}
+
+.y-axis {
+  width: 35px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding-bottom: 30px;
+}
+
+.y-axis span {
+  font-size: 10px;
+
+  color: #56627e;
+}
+
+
+.chart-area {
+  position: relative;
+
+  flex: 1;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  border-bottom: 1px solid #222d49;
+}
+
+
+/* Grid */
+
+.grid-line {
+  position: absolute;
+
+  width: 100%;
+
+  border-top: 1px dashed #1b2540;
+}
+
+.line1 {
+  top: 0;
+}
+
+.line2 {
+  top: 25%;
+}
+
+.line3 {
+  top: 50%;
+}
+
+.line4 {
+  top: 75%;
+}
+
+.line5 {
+  bottom: 0;
+}
+
+
+
+/* ========================================= */
+/* CHART BARS                               */
+/* ========================================= */
+
+.chart-bars {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+
+  height: 100%;
+
+  display: flex;
+
+  justify-content: space-around;
+
+  align-items: flex-end;
+}
+
+.bar-wrapper {
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.bar {
+  width: 30px;
+
+  border-radius: 6px 6px 2px 2px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #9b7cff,
+      #6042d9
+    );
+
+  box-shadow:
+    0 0 15px rgba(124, 92, 246, 0.18);
+
+  transition: 0.2s;
+}
+
+.bar:hover {
+  background:
+    linear-gradient(
+      180deg,
+      #b09aff,
+      #7655ed
+    );
+
+  box-shadow:
+    0 0 20px rgba(124, 92, 246, 0.40);
+}
+
+.bar-1 {
+  height: 55%;
+}
+
+.bar-2 {
+  height: 62%;
+}
+
+.bar-3 {
+  height: 68%;
+}
+
+.bar-4 {
+  height: 72%;
+}
+
+.bar-5 {
+  height: 80%;
+}
+
+.bar-6 {
+  height: 87%;
+}
+
+.bar-wrapper span {
+  font-size: 10px;
+
+  color: #687593;
+}
+
+
+/* ========================================= */
+/* BOTTOM SECTION                            */
+/* ========================================= */
+
+.performance-bottom {
+  display: grid;
+
+  grid-template-columns: 1.5fr 1fr;
+
+  gap: 20px;
+}
+
+
+/* ========================================= */
+/* SUBJECT PERFORMANCE                       */
+/* ========================================= */
+
+.subject {
+  margin-bottom: 18px;
+}
+
+.subject-info {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 7px;
+}
+
+.subject-info span {
+  font-size: 12px;
+
+  color: #a6b1c9;
+}
+
+.subject-info strong {
+  font-size: 12px;
+
+  color: #ffffff;
+}
+
+
+/* Progress background */
+
+.progress-bg {
+  width: 100%;
+
+  height: 7px;
+
+  background: #171f35;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+
+/* Progress */
+
+.progress-fill {
+  height: 100%;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #5d3fd3,
+      #9b7cff
+    );
+
+  box-shadow:
+    0 0 10px rgba(124, 92, 246, 0.25);
+}
+
+.java {
+  width: 92%;
+}
+
+.python {
+  width: 87%;
+}
+
+.maths {
+  width: 82%;
+}
+
+.dbms {
+  width: 78%;
+}
+
+.os {
+  width: 73%;
+}
+
+
+/* ========================================= */
+/* RECENT ACTIVITY                           */
+/* ========================================= */
+
+.activity {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid #1a233c;
+}
+
+.activity:last-child {
+  border-bottom: none;
+}
+
+
+.activity-icon {
+  width: 32px;
+
+  height: 32px;
+
+  border-radius: 8px;
+
+  background: #20194a;
+
+  color: #a78bfa;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-weight: bold;
+
+  font-size: 13px;
+}
+
+.activity h3 {
+  font-size: 12px;
+
+  margin-bottom: 4px;
+
+  color: #e5e7eb;
+}
+
+.activity p {
+  font-size: 11px;
+
+  color: #71809f;
+}
+
+
+/* ========================================= */
+/* RESPONSIVE                                */
+/* ========================================= */
+
+@media (max-width: 1000px) {
+
+  .stats-container {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .performance-bottom {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .sidebar {
+    width: 190px;
+
+    padding: 20px 12px;
+  }
+
+  .main-content {
+    padding: 25px 20px;
+  }
+
+  .performance-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 15px;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    width: 160px;
+  }
+
+}
+/* ================================= */
+/* PERFORMANCE DOODLES */
+/* ================================= */
+
+.performance-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.performance-doodles {
+  position: absolute;
+  top: 5px;
+  right: 20px;
+  width: 360px;
+  height: 250px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Keep actual content above doodles */
+
+.performance-header,
+.stats-container,
+.performance-card,
+.performance-bottom {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* ========================= */
+/* STARS */
+/* ========================= */
+
+.perf-star {
+  position: absolute;
+  color: #8f7aff;
+  font-size: 22px;
+  opacity: 0.8;
+}
+
+.star-one {
+  top: 20px;
+  right: 220px;
+}
+
+.star-two {
+  top: 75px;
+  right: 40px;
+  font-size: 16px;
+}
+
+.star-three {
+  top: 155px;
+  right: 290px;
+  font-size: 14px;
+}
+
+.star-four {
+  top: 110px;
+  right: 170px;
+  font-size: 30px;
+}
+
+
+/* ========================= */
+/* GROWTH ARROW */
+/* ========================= */
+
+.growth-doodle {
+  position: absolute;
+  top: 45px;
+  right: 80px;
+  width: 150px;
+  height: 100px;
+  transform: rotate(-8deg);
+}
+
+.growth-line {
+  position: absolute;
+  height: 2px;
+  background: #7664c9;
+  opacity: 0.65;
+  transform-origin: left;
+}
+
+.line-one {
+  width: 45px;
+  left: 5px;
+  bottom: 10px;
+  transform: rotate(-5deg);
+}
+
+.line-two {
+  width: 50px;
+  left: 45px;
+  bottom: 15px;
+  transform: rotate(-35deg);
+}
+
+.line-three {
+  width: 55px;
+  left: 85px;
+  bottom: 45px;
+  transform: rotate(-35deg);
+}
+
+.growth-arrow {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #a58cff;
+  font-size: 40px;
+  font-weight: 300;
+}
+
+
+/* ========================= */
+/* MINI BAR CHART */
+/* ========================= */
+
+.mini-chart {
+  position: absolute;
+  right: 210px;
+  bottom: 20px;
+  width: 80px;
+  height: 65px;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  border-bottom: 2px solid #51477c;
+}
+
+.mini-bar {
+  width: 12px;
+  border-radius: 4px 4px 0 0;
+  background: #6953c7;
+  opacity: 0.65;
+}
+
+.bar-one {
+  height: 25px;
+}
+
+.bar-two {
+  height: 38px;
+}
+
+.bar-three {
+  height: 48px;
+}
+
+.bar-four {
+  height: 60px;
+}
+
+
+/* ========================= */
+/* TARGET */
+/* ========================= */
+
+.target-doodle {
+  position: absolute;
+  right: 20px;
+  bottom: 40px;
+  width: 65px;
+  height: 65px;
+  border: 2px solid #675b9d;
+  border-radius: 50%;
+  transform: rotate(-15deg);
+}
+
+.target-doodle::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 2px solid #675b9d;
+  border-radius: 50%;
+}
+
+.target-circle {
+  position: absolute;
+  inset: 22px;
+  border: 2px solid #8f7aff;
+  border-radius: 50%;
+}
+
+.target-dot {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: #a58cff;
+  border-radius: 50%;
+  top: 27px;
+  left: 27px;
+}
+
+
+/* ========================= */
+/* PENCIL */
+/* ========================= */
+
+.pencil-doodle {
+  position: absolute;
+  top: 150px;
+  right: 145px;
+  width: 80px;
+  height: 20px;
+  transform: rotate(-45deg);
+}
+
+.pencil-body {
+  width: 65px;
+  height: 12px;
+  border: 2px solid #6e639c;
+  border-radius: 4px;
+}
+
+.pencil-tip {
+  position: absolute;
+  right: -10px;
+  top: 1px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 12px solid #6e639c;
+}
+
+
+/* ========================= */
+/* FLOATING DOTS */
+/* ========================= */
+
+.perf-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid #7868b5;
+  border-radius: 50%;
+}
+
+.dot-one {
+  top: 45px;
+  right: 310px;
+}
+
+.dot-two {
+  top: 190px;
+   right: 110px;
+}
+
+.dot-three {
+  top: 135px;
+  right: 25px;
+}

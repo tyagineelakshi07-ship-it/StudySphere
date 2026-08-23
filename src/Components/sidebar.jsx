@@ -26,86 +26,60 @@ function Sidebar() {
         <span>Sphere</span>
       </div>
 
-
       {/* Navigation */}
       <nav className="nav-menu">
 
-        <Link to="/" className="nav-item active">
+        <Link to="/" className="nav-item">
           <Home size={17} />
           <p>Home</p>
         </Link>
 
-        <div className="nav-item">
+        <Link to="/notes" className="nav-item">
           <NotebookPen size={17} />
           <p>Notes</p>
-        </div>
+        </Link>
 
         <Link to="/pomodoro" className="nav-item">
           <Timer size={17} />
           <p>Pomodoro</p>
         </Link>
 
-        <div className="nav-item">
+        <Link to="/todo" className="nav-item">
           <ListTodo size={17} />
           <p>Todo List</p>
-        </div>
+        </Link>
 
-        <div className="nav-item">
+        <Link to="/quiz-generator" className="nav-item">
           <Brain size={17} />
           <p>Quiz Generator</p>
-        </div>
+        </Link>
 
-        <Link to="/notes" className="nav-item">
-  <NotebookPen size={17} />
-  <p>Notes</p>
-</Link>
-
-<Link to="/performance" className="nav-item">
-  <ChartNoAxesColumn size={17} />
-  <p>Performance</p>
-</Link>
-
-<Link to="/settings" className="nav-item">
-  <Settings size={17} />
-  <p>Settings</p>
-</Link>
-        {/* YouTube Manager */}
         <Link to="/youtube" className="nav-item">
           <PlaySquare size={17} />
           <p>YouTube Manager</p>
         </Link>
 
-        <div className="nav-item">
+        <Link to="/performance" className="nav-item">
           <ChartNoAxesColumn size={17} />
           <p>Performance</p>
-        </div>
+        </Link>
 
-        <div className="nav-item">
+        <Link to="/settings" className="nav-item">
           <Settings size={17} />
           <p>Settings</p>
-        </div>
+        </Link>
 
-        <div className="nav-item">
+        <Link to="/about" className="nav-item">
           <Info size={17} />
           <p>About Us</p>
-        </div>
-        
-        <NavLink to="/about">
-          <Info />
-         <span>About</span>
-         </NavLink>
+        </Link>
 
-        <NavLink to="/todo">
-        <CheckSquare />
-         <span>Todo</span>
-        </NavLink>
+        <Link to="/contact" className="nav-item">
+          <Mail size={17} />
+          <p>Contact</p>
+        </Link>
 
-       <NavLink to="/quiz-generator">
-         <Sparkles />
-        <span>Quiz Generator</span>
-        </NavLink>
       </nav>
-
 
       {/* Profile */}
       <div className="profile">

@@ -1,0 +1,262 @@
+/* ---------- PAGE HEADER ---------- */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.page-header-text h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.page-header-icon {
+  color: var(--purple-500);
+}
+
+.page-header-text p {
+  margin-top: 8px;
+  font-size: 14.5px;
+  color: var(--text-secondary);
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .page-header {
+    flex-direction: column;
+  }
+}
+
+/* ---------- DOODLE (decorative line-art) ---------- */
+
+.doodle {
+  position: absolute;
+  color: var(--purple-500, #8b5cf6);
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.35));
+  user-select: none;
+}
+
+.doodle svg {
+  display: block;
+}
+
+.doodle.blue {
+  color: var(--blue-500, #3b82f6);
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.35));
+}
+
+.doodle.faint {
+  opacity: 0.16;
+}
+
+.doodle.strong {
+  opacity: 0.4;
+}
+
+.quiz-page {
+  padding-top: 32px;
+}
+
+.icon-btn.round {
+  border-radius: 50%;
+}
+
+.quiz-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 22px;
+  align-items: start;
+  position: relative;
+  z-index: 2;
+}
+
+.config-card {
+  padding: 26px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.field label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.field label svg {
+  color: var(--purple-500);
+}
+
+.select-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: default;
+  transition: border-color 0.15s ease;
+}
+
+.select-box:hover {
+  border-color: var(--border-strong);
+}
+
+.select-chevron {
+  color: var(--text-muted);
+}
+
+.textarea-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px 16px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.textarea-box .placeholder {
+  font-size: 13.5px;
+  color: var(--text-faint);
+}
+
+.char-count {
+  align-self: flex-end;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.generate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 13px;
+  background: var(--grad-primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 4px;
+  box-shadow: 0 14px 30px -12px rgba(124, 58, 237, 0.65);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.generate-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.preview-card {
+  padding: 22px 24px;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.preview-head h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.preview-head span {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--purple-500);
+}
+
+.preview-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 0 30px;
+}
+
+.preview-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: var(--purple-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.preview-empty h4 {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.preview-empty p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 280px;
+}
+
+@media (max-width: 1100px) {
+  .quiz-layout {
+    grid-template-columns: 1fr;
+  }
+  .preview-card {
+    min-height: 320px;
+  }
+}

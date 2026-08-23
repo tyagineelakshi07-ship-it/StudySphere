@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Notes from "./pages/Notes.jsx";
 import Sidebar from "./Components/sidebar";
-import Home from "./pages/home.jsx";
+import Home from "./pages/Home.jsx";
 import Performance from "./pages/Performance.jsx";
 import Pomodoro from "./pages/Pomodoro.jsx";
 import Settings from "./pages/Settings.jsx";
-import YouTubeManager from "./pages/YouTubeManager.jsx";
+import YouTubeManager from "./pages/YoutubeManager.jsx";
 import About from "./pages/About.jsx";
 import Todo from "./pages/Todo.jsx";
 import QuizGenerator from "./pages/QuizGenerator.jsx";

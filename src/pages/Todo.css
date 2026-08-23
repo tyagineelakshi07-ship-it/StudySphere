@@ -1,0 +1,386 @@
+/* ---------- PAGE HEADER ---------- */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.page-header-text h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.page-header-icon {
+  color: var(--purple-500);
+}
+
+.page-header-text p {
+  margin-top: 8px;
+  font-size: 14.5px;
+  color: var(--text-secondary);
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .page-header {
+    flex-direction: column;
+  }
+}
+
+/* ---------- DOODLE (decorative line-art) ---------- */
+
+.doodle {
+  position: absolute;
+  color: var(--purple-500, #8b5cf6);
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.35));
+  user-select: none;
+}
+
+.doodle svg {
+  display: block;
+}
+
+.doodle.blue {
+  color: var(--blue-500, #3b82f6);
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.35));
+}
+
+.doodle.faint {
+  opacity: 0.16;
+}
+
+.doodle.strong {
+  opacity: 0.4;
+}
+
+/* ---------- TASK CARD ---------- */
+
+.task-card {
+  position: absolute;
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 9px 10px;
+  min-width: 58px;
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: default;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.task-card-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.task-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.task-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+
+  display: -webkit-box;
+
+  /* Standard property */
+  line-clamp: 2;
+
+  /* WebKit compatibility */
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+}
+
+.task-time {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.task-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 7px;
+  flex-wrap: wrap;
+}
+
+.task-label span {
+  overflow-wrap: break-word;
+}
+
+.task-card.compact {
+  padding: 7px 8px;
+}
+
+.task-card.compact .task-title {
+  font-size: 11.5px;
+
+  /* Standard property */
+  line-clamp: 2;
+
+  /* WebKit compatibility */
+  -webkit-line-clamp: 2;
+}
+
+.task-card.compact .task-time {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.task-card.compact .task-label {
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.todo-page {
+  padding-top: 32px;
+}
+
+/* ---------- HEADER CONTROLS ---------- */
+
+.view-toggle {
+  display: flex;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle button {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.view-toggle button.active {
+  background: var(--grad-primary);
+  color: #fff;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.icon-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.add-task-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--grad-primary);
+  color: #fff;
+  border: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px -8px rgba(124, 58, 237, 0.6);
+  transition: filter 0.15s ease;
+}
+
+.add-task-btn:hover {
+  filter: brightness(1.08);
+}
+
+/* ---------- TIMELINE PANEL ---------- */
+
+.timeline-panel {
+  padding: 22px 24px 18px;
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-date {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--purple-500);
+  margin-bottom: 16px;
+}
+
+.timeline-head {
+  display: grid;
+  grid-template-columns: 55px repeat(7, 1fr);
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.time-col-spacer {
+  width: 55px;
+}
+
+.timeline-day-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.timeline-day-head .day-num {
+  font-weight: 600;
+}
+
+.timeline-day-head.active {
+  color: var(--text-primary);
+  font-weight: 700;
+  position: relative;
+}
+
+.timeline-day-head.active::after {
+  content: "";
+  position: absolute;
+  bottom: -13px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--purple-500);
+  border-radius: 2px;
+}
+
+/* ---------- TIMELINE BODY ---------- */
+
+.timeline-body {
+  position: relative;
+  display: flex;
+  margin-top: 14px;
+}
+
+.time-labels {
+  width: 55px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.time-label {
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.timeline-grid {
+  flex: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  height: 100%;
+}
+
+.timeline-col {
+  position: relative;
+  height: 100%;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.timeline-col.active-col {
+  background: rgba(139, 92, 246, 0.035);
+}
+
+.hour-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- FOOTER / LEGEND ---------- */
+
+.timeline-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: 26px;
+  padding: 0 4px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+/* ---------- RESPONSIVE TIMELINE ---------- */
+
+@media (max-width: 1200px) {
+  .timeline-panel {
+    overflow-x: auto;
+  }
+
+  .timeline-head,
+  .timeline-body {
+    min-width: 900px;
+  }
+}

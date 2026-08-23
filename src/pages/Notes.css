@@ -1,0 +1,702 @@
+/* ========================================= */
+/* NOTES PAGE                                 */
+/* ========================================= */
+
+.notes-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  position: relative;
+
+  min-height: 100vh;
+
+  overflow: hidden;
+}
+
+
+/* ========================================= */
+/* NOTES HEADER                               */
+/* ========================================= */
+
+.notes-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 25px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+.notes-header h1 {
+  font-size: 30px;
+
+  margin-bottom: 6px;
+
+  color: #ffffff;
+}
+
+.notes-header p {
+  color: #7f8cab;
+
+  font-size: 13px;
+}
+
+
+/* ========================================= */
+/* CREATE NOTE BUTTON                         */
+/* ========================================= */
+
+.create-note-btn {
+  border: none;
+
+  padding: 11px 18px;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6744df,
+      #915cff
+    );
+
+  color: white;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 20px rgba(124, 92, 246, 0.25);
+
+  transition: 0.2s;
+}
+
+.create-note-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 0 25px rgba(124, 92, 246, 0.40);
+}
+
+
+/* ========================================= */
+/* TOOLBAR                                    */
+/* ========================================= */
+
+.notes-toolbar {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+
+/* Search */
+
+.notes-toolbar input {
+  width: 210px;
+
+  padding: 10px 14px;
+
+  border-radius: 20px;
+
+  border: 1px solid #202b49;
+
+  background: #0c1326;
+
+  color: white;
+
+  outline: none;
+
+  font-size: 11px;
+}
+
+.notes-toolbar input::placeholder {
+  color: #64708c;
+}
+
+.notes-toolbar input:focus {
+  border-color: #6046c8;
+}
+
+
+/* ========================================= */
+/* FILTER BUTTONS                             */
+/* ========================================= */
+
+.filter-buttons {
+  display: flex;
+
+  gap: 6px;
+}
+
+.filter-buttons button {
+  border: none;
+
+  padding: 9px 14px;
+
+  border-radius: 18px;
+
+  background: #10172b;
+
+  color: #7e89a4;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.filter-buttons button:hover {
+  color: white;
+
+  background: #181d3a;
+}
+
+.filter-buttons .active-filter {
+  background:
+    linear-gradient(
+      135deg,
+      #6946df,
+      #8b5cf6
+    );
+
+  color: white;
+
+  box-shadow:
+    0 0 15px rgba(124, 92, 246, 0.20);
+}
+
+
+/* Sort */
+
+.notes-toolbar select {
+  margin-left: auto;
+
+  padding: 9px 13px;
+
+  border-radius: 18px;
+
+  border: 1px solid #202b49;
+
+  background: #0c1326;
+
+  color: #8c98b4;
+
+  font-size: 11px;
+
+  outline: none;
+}
+
+
+/* ========================================= */
+/* NOTES GRID                                 */
+/* ========================================= */
+
+.notes-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 16px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+
+/* ========================================= */
+/* NOTE CARD                                  */
+/* ========================================= */
+
+.note-card {
+  min-height: 175px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #10172d,
+      #0a1021
+    );
+
+  border: 1px solid #202a46;
+
+  border-radius: 13px;
+
+  overflow: hidden;
+
+  position: relative;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.25);
+
+  transition: 0.25s;
+}
+
+.note-card:hover {
+  transform: translateY(-4px);
+
+  border-color: #5641ae;
+
+  box-shadow:
+    0 12px 35px rgba(92, 65, 190, 0.18);
+}
+
+
+/* ========================================= */
+/* SUBJECT HEADER                             */
+/* ========================================= */
+
+.note-subject {
+  height: 42px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 0 13px;
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: bold;
+}
+
+
+/* Different subject header colors */
+
+.dbms-note .note-subject {
+  background:
+    linear-gradient(
+      90deg,
+      #4e36b7,
+      #7658dc
+    );
+}
+
+.java-note .note-subject {
+  background:
+    linear-gradient(
+      90deg,
+      #d65b32,
+      #8d39a9
+    );
+}
+
+.react-note .note-subject {
+  background:
+    linear-gradient(
+      90deg,
+      #1393ae,
+      #254a9e
+    );
+}
+
+.os-note .note-subject {
+  background:
+    linear-gradient(
+      90deg,
+      #7141ce,
+      #42328c
+    );
+}
+
+.math-note .note-subject {
+  background:
+    linear-gradient(
+      90deg,
+      #dc8a1d,
+      #8d4c3c
+    );
+}
+
+.sql-note .note-subject {
+  background:
+    linear-gradient(
+      90deg,
+      #2873bd,
+      #147f9a
+    );
+}
+
+
+/* Subject name */
+
+.subject-name {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.subject-icon {
+  font-size: 14px;
+}
+
+
+/* ========================================= */
+/* FAVORITE                                   */
+/* ========================================= */
+
+.favorite {
+  font-size: 19px;
+
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.favorite.active {
+  color: #ffd34e;
+
+  text-shadow:
+    0 0 10px rgba(255, 211, 78, 0.35);
+}
+
+
+/* ========================================= */
+/* NOTE CONTENT                               */
+/* ========================================= */
+
+.note-content {
+  padding: 16px 14px 8px;
+}
+
+.note-content h2 {
+  font-size: 14px;
+
+  color: #f1f3f8;
+
+  margin-bottom: 8px;
+}
+
+.note-content p {
+  color: #7d89a6;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+
+/* ========================================= */
+/* NOTE DATE                                  */
+/* ========================================= */
+
+.note-date {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 8px 14px 14px;
+
+  color: #59657f;
+
+  font-size: 10px;
+}
+
+.note-date span {
+  color: #737fa0;
+}
+/* ========================================= */
+/* NOTES BACKGROUND DOODLES                   */
+/* ========================================= */
+
+.notes-doodle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+
+  color: rgba(225, 220, 255, 0.25);
+
+  font-weight: normal;
+}
+
+
+/* ========================================= */
+/* STARS                                      */
+/* ========================================= */
+
+.notes-star-one {
+  right: 25%;
+  top: 25px;
+
+  font-size: 38px;
+
+  color: rgba(220, 210, 255, 0.32);
+
+  text-shadow:
+    0 0 15px rgba(140, 110, 255, 0.25);
+
+  transform: rotate(15deg);
+}
+
+.notes-star-two {
+  right: 6%;
+  top: 160px;
+
+  font-size: 30px;
+
+  color: rgba(220, 210, 255, 0.28);
+}
+
+
+/* ========================================= */
+/* BIG BOOK DOODLE                            */
+/* ========================================= */
+
+.notes-book {
+  left: 5px;
+  bottom: 55px;
+
+  width: 145px;
+  height: 95px;
+
+  border: 2px solid rgba(225, 220, 255, 0.20);
+
+  border-radius: 8px;
+
+  transform: rotate(-10deg);
+
+  opacity: 1;
+
+  box-shadow:
+    0 0 20px rgba(120, 90, 220, 0.08);
+}
+
+
+/* Middle of book */
+
+.notes-book::before {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+
+  height: 100%;
+  width: 2px;
+
+  background: rgba(225, 220, 255, 0.20);
+}
+
+
+/* Book lines */
+
+.notes-book div {
+  height: 2px;
+
+  width: 38px;
+
+  background: rgba(225, 220, 255, 0.17);
+
+  margin-top: 20px;
+
+  margin-left: 13px;
+}
+
+.notes-book div:nth-child(2) {
+  margin-left: 82px;
+}
+
+.notes-book div:nth-child(3) {
+  margin-left: 13px;
+}
+
+
+/* ========================================= */
+/* PAPER DOODLE                               */
+/* ========================================= */
+
+.notes-paper {
+  right: 35px;
+  bottom: 25px;
+
+  width: 100px;
+  height: 125px;
+
+  border: 2px solid rgba(225, 220, 255, 0.18);
+
+  border-radius: 6px;
+
+  transform: rotate(8deg);
+
+  opacity: 1;
+
+  box-shadow:
+    0 0 20px rgba(120, 90, 220, 0.08);
+}
+
+
+/* Paper lines */
+
+.notes-paper::before {
+  content: "";
+
+  position: absolute;
+
+  top: 22px;
+  left: 15px;
+
+  width: 65px;
+  height: 2px;
+
+  background: rgba(225, 220, 255, 0.18);
+
+  box-shadow:
+    0 20px rgba(225, 220, 255, 0.18),
+    0 40px rgba(225, 220, 255, 0.18),
+    0 60px rgba(225, 220, 255, 0.18);
+}
+
+
+/* ========================================= */
+/* PENCIL                                     */
+/* ========================================= */
+
+.notes-pencil {
+  right: 18%;
+  bottom: 80px;
+
+  font-size: 100px;
+
+  color: rgba(225, 220, 255, 0.18);
+
+  transform: rotate(-25deg);
+
+  text-shadow:
+    0 0 18px rgba(130, 100, 240, 0.12);
+}
+
+
+/* ========================================= */
+/* EXTRA LITTLE SPARKLES                      */
+/* ========================================= */
+
+.notes-page .notes-star-one::after {
+  content: "·  ·";
+
+  position: absolute;
+
+  left: -35px;
+  top: 45px;
+
+  font-size: 25px;
+
+  letter-spacing: 8px;
+
+  color: rgba(220, 215, 255, 0.18);
+}
+
+
+/* ========================================= */
+/* PURPLE BACKGROUND GLOW                     */
+/* ========================================= */
+
+.notes-page::before {
+  content: "";
+
+  position: absolute;
+
+  width: 400px;
+  height: 400px;
+
+  right: -130px;
+  top: -130px;
+
+  background: rgba(101, 67, 210, 0.14);
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  z-index: 0;
+
+  pointer-events: none;
+}
+
+.notes-page::after {
+  content: "";
+
+  position: absolute;
+
+  width: 350px;
+  height: 350px;
+
+  left: -140px;
+  bottom: -100px;
+
+  background: rgba(83, 57, 180, 0.12);
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  z-index: 0;
+
+  pointer-events: none;
+}
+
+
+/* ========================================= */
+/* RESPONSIVE                                 */
+/* ========================================= */
+
+@media (max-width: 1000px) {
+
+  .notes-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .notes-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .notes-toolbar select {
+    margin-left: 0;
+  }
+
+}
+
+@media (max-width: 550px) {
+
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .notes-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 15px;
+  }
+
+}

@@ -55,6 +55,20 @@ function Sidebar() {
           <p>Quiz Generator</p>
         </div>
 
+        <Link to="/notes" className="nav-item">
+  <NotebookPen size={17} />
+  <p>Notes</p>
+</Link>
+
+<Link to="/performance" className="nav-item">
+  <ChartNoAxesColumn size={17} />
+  <p>Performance</p>
+</Link>
+
+<Link to="/settings" className="nav-item">
+  <Settings size={17} />
+  <p>Settings</p>
+</Link>
         {/* YouTube Manager */}
         <Link to="/youtube" className="nav-item">
           <PlaySquare size={17} />
@@ -75,12 +89,21 @@ function Sidebar() {
           <Info size={17} />
           <p>About Us</p>
         </div>
+        
+        <NavLink to="/about">
+          <Info />
+         <span>About</span>
+         </NavLink>
 
-        <div className="nav-item">
-          <Mail size={17} />
-          <p>Contact</p>
-        </div>
+        <NavLink to="/todo">
+        <CheckSquare />
+         <span>Todo</span>
+        </NavLink>
 
+       <NavLink to="/quiz-generator">
+         <Sparkles />
+        <span>Quiz Generator</span>
+        </NavLink>
       </nav>
 
 

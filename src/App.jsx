@@ -1,10 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Notes from "./pages/Notes.jsx";
 import Sidebar from "./Components/sidebar";
 import Home from "./pages/home.jsx";
+import Performance from "./pages/Performance.jsx";
 import Pomodoro from "./pages/Pomodoro.jsx";
+import Settings from "./pages/Settings.jsx";
 import YouTubeManager from "./pages/YouTubeManager.jsx";
-
+import About from "./pages/About.jsx";
+import Todo from "./pages/Todo.jsx";
+import QuizGenerator from "./pages/QuizGenerator.jsx";
 import "./App.css";
 
 function App() {
@@ -17,7 +21,13 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/pomodoro" element={<Pomodoro />} />
+            <Route path="/notes" element={<Notes />} />
             <Route path="/youtube" element={<YouTubeManager />} />
+             <Route path="/performance" element={<Performance />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/about" element={<About />} />
+      <Route path="/todo" element={<Todo />} />
+      <Route path="/quiz-generator" element={<QuizGenerator />} />
           </Routes>
         </main>
       </div>

@@ -89,12 +89,21 @@ function Sidebar() {
           <Info size={17} />
           <p>About Us</p>
         </div>
+        
+        <NavLink to="/about">
+          <Info />
+         <span>About</span>
+         </NavLink>
 
-        <div className="nav-item">
-          <Mail size={17} />
-          <p>Contact</p>
-        </div>
+        <NavLink to="/todo">
+        <CheckSquare />
+         <span>Todo</span>
+        </NavLink>
 
+       <NavLink to="/quiz-generator">
+         <Sparkles />
+        <span>Quiz Generator</span>
+        </NavLink>
       </nav>
 
 

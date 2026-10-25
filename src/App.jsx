@@ -12,7 +12,7 @@ import About from "./pages/About.jsx";
 import Todo from "./pages/Todo.jsx";
 import QuizGenerator from "./pages/QuizGenerator.jsx";
 
-import Sidebar from "./Components/Sidebar.jsx";
+import Sidebar from "./Components/sidebar.jsx";
 import { StudyProvider } from "./context/StudyContext.jsx";
 import { store } from "./redux/store.js";
 

@@ -1,130 +1,228 @@
+
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import {
+  addVideo,
+  toggleVideo,
+  deleteVideo,
+} from "../slices/videoSlice.js";
+
 import "./YoutubeManager.css";
 
 function YouTubeManager() {
+  const dispatch = useDispatch();
 
-  const [video1, setVideo1] = useState(false);
-  const [video2, setVideo2] = useState(false);
-  const [video3, setVideo3] = useState(false);
+  const videos = useSelector((state) => state.videos.videos);
+
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [subject, setSubject] = useState("");
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("All");
+
+  function isValidYouTubeUrl(value) {
+    try {
+      const parsedUrl = new URL(value);
+      const hostname = parsedUrl.hostname.toLowerCase();
+
+      return (
+        (
+          hostname === "youtube.com" ||
+          hostname.endsWith(".youtube.com") ||
+          hostname === "youtu.be" ||
+          hostname.endsWith(".youtu.be")
+        ) &&
+        (
+          parsedUrl.protocol === "https:" ||
+          parsedUrl.protocol === "http:"
+        )
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  function handleSaveVideo(event) {
+    event.preventDefault();
+
+    if (!title.trim() || !url.trim() || !subject.trim()) {
+      setError("Please fill in the title, video link and subject.");
+      return;
+    }
+
+    if (!isValidYouTubeUrl(url.trim())) {
+      setError("Please enter a valid YouTube link.");
+      return;
+    }
+
+    dispatch(
+      addVideo({
+        title: title.trim(),
+        url: url.trim(),
+        subject: subject.trim(),
+      })
+    );
+
+    setTitle("");
+    setUrl("");
+    setSubject("");
+    setError("");
+  }
+
+  const completedCount = videos.filter(
+    (video) => video.completed
+  ).length;
+
+  const subjects = [
+    "All",
+    ...new Set(videos.map((video) => video.subject)),
+  ];
+
+  const filteredVideos = videos.filter((video) => {
+    const matchesSearch =
+      video.title.toLowerCase().includes(search.toLowerCase()) ||
+      video.subject.toLowerCase().includes(search.toLowerCase());
+
+    const matchesSubject =
+      selectedSubject === "All" ||
+      video.subject === selectedSubject;
+
+    return matchesSearch && matchesSubject;
+  });
 
   return (
     <div className="youtube-page">
-
       <div className="youtube-header">
         <h1>YouTube Manager</h1>
         <p>Save and organize your study videos in one place 🎥</p>
       </div>
 
-
       <div className="add-video-box">
-
         <h2>➕ Add Study Video</h2>
 
-        <label>YouTube Video Link</label>
+        <form onSubmit={handleSaveVideo}>
+          <label htmlFor="video-title">Video Title</label>
+          <input
+            id="video-title"
+            type="text"
+            placeholder="Enter video title"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+          />
 
-        <input
-          type="text"
-          placeholder="Paste YouTube video link here"
-        />
+          <label htmlFor="video-url">YouTube Video Link</label>
+          <input
+            id="video-url"
+            type="url"
+            placeholder="Paste YouTube video link here"
+            value={url}
+            onChange={(event) => setUrl(event.target.value)}
+          />
 
-        <label>Subject</label>
+          <label htmlFor="video-subject">Subject</label>
+          <input
+            id="video-subject"
+            type="text"
+            placeholder="Enter subject name"
+            value={subject}
+            onChange={(event) => setSubject(event.target.value)}
+          />
 
-        <input
-          type="text"
-          placeholder="Enter subject name"
-        />
+          {error && (
+            <p role="alert" className="youtube-error">
+              {error}
+            </p>
+          )}
 
-        <button>Save Video</button>
-
+          <button type="submit">Save Video</button>
+        </form>
       </div>
-
 
       <div className="videos-section">
-
         <h2>📚 My Study Videos</h2>
 
+        <p className="youtube-progress">
+          Completed: {completedCount} / {videos.length} videos
+        </p>
 
-        {/* Video 1 */}
-        <div className="video-card">
+        <input
+          type="search"
+          placeholder="Search by title or subject..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          aria-label="Search study videos"
+        />
 
-          <div className="video-icon">
-            ▶
-          </div>
+        <select
+          value={selectedSubject}
+          onChange={(event) => setSelectedSubject(event.target.value)}
+          aria-label="Filter videos by subject"
+        >
+          {subjects.map((subjectName) => (
+            <option key={subjectName} value={subjectName}>
+              {subjectName === "All"
+                ? "All Subjects"
+                : subjectName}
+            </option>
+          ))}
+        </select>
 
-          <div className="video-info">
-            <h3>SQL Joins Explained</h3>
-            <p>Subject: DBMS</p>
-          </div>
+        {filteredVideos.length === 0 ? (
+          <p className="youtube-empty">
+            No matching videos found.
+          </p>
+        ) : (
+          filteredVideos.map((video) => (
+            <div className="video-card" key={video.id}>
+              <div className="video-icon">▶</div>
 
-          <button
-            className={
-              video1
-                ? "video-status completed"
-                : "video-status not-watched"
-            }
-            onClick={() => setVideo1(!video1)}
-          >
-            {video1 ? "✓ Completed" : "☐ Not Watched"}
-          </button>
+              <div className="video-info">
+                <h3>{video.title}</h3>
+                <p>Subject: {video.subject}</p>
 
-        </div>
+                {video.url && (
+                  <a
+                    href={video.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Watch Video ↗
+                  </a>
+                )}
+              </div>
 
+              <button
+                type="button"
+                className={
+                  video.completed
+                    ? "video-status completed"
+                    : "video-status not-watched"
+                }
+                onClick={() => dispatch(toggleVideo(video.id))}
+              >
+                {video.completed
+                  ? "✓ Completed"
+                  : "☐ Not Watched"}
+              </button>
 
-        {/* Video 2 */}
-        <div className="video-card">
-
-          <div className="video-icon">
-            ▶
-          </div>
-
-          <div className="video-info">
-            <h3>Probability Basics</h3>
-            <p>Subject: Statistics</p>
-          </div>
-
-          <button
-            className={
-              video2
-                ? "video-status completed"
-                : "video-status not-watched"
-            }
-            onClick={() => setVideo2(!video2)}
-          >
-            {video2 ? "✓ Completed" : "☐ Not Watched"}
-          </button>
-
-        </div>
-
-
-        {/* Video 3 */}
-        <div className="video-card">
-
-          <div className="video-icon">
-            ▶
-          </div>
-
-          <div className="video-info">
-            <h3>React Components</h3>
-            <p>Subject: FEE</p>
-          </div>
-
-          <button
-            className={
-              video3
-                ? "video-status completed"
-                : "video-status not-watched"
-            }
-            onClick={() => setVideo3(!video3)}
-          >
-            {video3 ? "✓ Completed" : "☐ Not Watched"}
-          </button>
-
-        </div>
-
+              <button
+                type="button"
+                className="youtube-delete-btn"
+                onClick={() => dispatch(deleteVideo(video.id))}
+                aria-label={`Delete ${video.title}`}
+                title="Delete video"
+              >
+                Delete
+              </button>
+            </div>
+          ))
+        )}
       </div>
-
     </div>
   );
 }
 
 export default YouTubeManager;
+

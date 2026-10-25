@@ -134,3 +134,42 @@
   background: #203b32;
   color: #7ee2b8;
 }
+
+.youtube-delete-btn {
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 110, 130, 0.4);
+  border-radius: 8px;
+  background: transparent;
+  color: #ff8798;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.youtube-delete-btn:hover {
+  background: rgba(255, 110, 130, 0.12);
+}
+
+.youtube-error {
+  color: #ff8798;
+  font-size: 13px;
+  margin: 10px 0;
+}
+
+.youtube-progress,
+.youtube-empty {
+  margin: 12px 0 18px;
+  color: #aaaac2;
+  font-size: 14px;
+}
+
+.video-info a {
+  display: inline-block;
+  margin-top: 7px;
+  color: #b7aaff;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.video-info a:hover {
+  text-decoration: underline;
+}

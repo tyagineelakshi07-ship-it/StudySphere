@@ -15,9 +15,9 @@ import {
   ArrowRight,
   Zap,
   Mail,
-  Send,
 } from "lucide-react";
 
+import ContactForm from "../Components/ContactForm";
 import "./About.css";
 
 /**
@@ -642,7 +642,7 @@ function About() {
                   <span>Email us</span>
 
                   <strong>
-                    studysphere@gmail.com
+                    studysphere.studybuddy@gmail.com
                   </strong>
                 </div>
 
@@ -652,59 +652,7 @@ function About() {
 
             {/* CONTACT FORM */}
 
-            <form className="contact-form">
-
-              <div className="contact-input-row">
-
-                <div className="contact-field">
-                  <label htmlFor="contact-name">
-                    Name
-                  </label>
-
-                  <input
-                    id="contact-name"
-                    type="text"
-                    placeholder="Enter your name"
-                  />
-                </div>
-
-                <div className="contact-field">
-                  <label htmlFor="contact-email">
-                    Email
-                  </label>
-
-                  <input
-                    id="contact-email"
-                    type="email"
-                    placeholder="Enter your email"
-                  />
-                </div>
-
-              </div>
-
-              <div className="contact-field">
-
-                <label htmlFor="contact-message">
-                  Message
-                </label>
-
-                <textarea
-                  id="contact-message"
-                  rows="5"
-                  placeholder="Write your message..."
-                />
-
-              </div>
-
-              <button
-                type="button"
-                className="contact-submit"
-              >
-                Send Message
-                <Send size={16} />
-              </button>
-
-            </form>
+            <ContactForm />
 
           </div>
 

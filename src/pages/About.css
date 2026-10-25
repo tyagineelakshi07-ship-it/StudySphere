@@ -868,3 +868,8 @@
     font-size: 34px;
   }
 }
+/* Contact form validation */
+.contact-field .form-error { margin-top: 6px; }
+.contact-field input.is-invalid, .contact-field textarea.is-invalid { border-color: #f87171; }
+.contact-form .status-banner { margin: 4px 0; }
+.contact-submit:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }

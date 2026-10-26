@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Info,
   Check,
@@ -15,10 +16,62 @@ import {
   ArrowRight,
   Zap,
   Mail,
+  Send,
 } from "lucide-react";
 
-import ContactForm from "../Components/ContactForm";
 import "./About.css";
+
+
+const CONTACT_EMAIL = "studysphere.studybuddy@gmail.com";
+const CONTACT_ENDPOINT = import.meta.env.VITE_CONTACT_FORM_ENDPOINT || `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
+const EMPTY_CONTACT = { name: "", email: "", subject: "", message: "" };
+function ContactForm() {
+  const [values, setValues] = useState(EMPTY_CONTACT);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [failureHref, setFailureHref] = useState("");
+  const abortRef = useRef(null);
+  useEffect(() => () => abortRef.current?.abort(), []);
+  const validate = (v) => {
+    const e = {};
+    if (!v.name.trim()) e.name = "Please enter your name.";
+    if (!v.email.trim()) e.email = "Please enter your email.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) e.email = "Enter a valid email address.";
+    if (!v.subject.trim()) e.subject = "Please enter a subject.";
+    if (!v.message.trim()) e.message = "Please write a message.";
+    else if (v.message.trim().length < 10) e.message = "Message should be at least 10 characters.";
+    return e;
+  };
+  const change = (field) => (event) => { const next = { ...values, [field]: event.target.value }; setValues(next); if (touched[field]) setErrors(validate(next)); setStatus(null); };
+  const blur = (field) => () => { setTouched((old) => ({ ...old, [field]: true })); setErrors(validate(values)); };
+  const field = (name, label, type = "text", placeholder = "") => <div className="contact-field"><label htmlFor={`contact-${name}`}>{label}</label><input id={`contact-${name}`} className={touched[name] && errors[name] ? "is-invalid" : ""} type={type} placeholder={placeholder} value={values[name]} onChange={change(name)} onBlur={blur(name)} aria-invalid={!!(touched[name] && errors[name])} />{touched[name] && errors[name] && <p className="form-error" role="alert">{errors[name]}</p>}</div>;
+  const submit = async (event) => {
+    event.preventDefault(); const found = validate(values); setErrors(found); setTouched({ name: true, email: true, subject: true, message: true });
+    if (Object.keys(found).length) return;
+    const payload = { name: values.name.trim(), email: values.email.trim(), subject: values.subject.trim(), message: values.message.trim() };
+    const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(payload.subject)}&body=${encodeURIComponent(`${payload.message}\n\n— ${payload.name} (${payload.email})`)}`;
+    setSubmitting(true); setStatus(null); const controller = new AbortController(); abortRef.current = controller;
+    const timer = setTimeout(() => controller.abort("timeout"), 15000);
+    try {
+      const response = await fetch(CONTACT_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ ...payload, _replyto: payload.email, _subject: `[StudySphere] ${payload.subject}` }), signal: controller.signal });
+      let data = null; try { data = await response.json(); } catch {}
+      if (!response.ok || data?.ok === false || data?.error || data?.success === "false") throw new Error(data?.message || "The email service rejected the message.");
+      setStatus({ type: "success", message: "Message sent! We'll get back to you soon." }); setValues(EMPTY_CONTACT); setTouched({}); setErrors({});
+    } catch (error) {
+      if (controller.signal.aborted && controller.signal.reason !== "timeout") return;
+      setFailureHref(href); setStatus({ type: "error", message: controller.signal.reason === "timeout" ? "Message not sent: request timed out. Please try again." : "Message not sent. Check your connection or email us directly." });
+    } finally { clearTimeout(timer); setSubmitting(false); }
+  };
+  return <form className="contact-form" onSubmit={submit} noValidate>
+    <div className="contact-input-row">{field("name", "Name", "text", "Enter your name")}{field("email", "Email", "email", "Enter your email")}</div>
+    {field("subject", "Subject", "text", "What is this about?")}
+    <div className="contact-field"><label htmlFor="contact-message">Message</label><textarea id="contact-message" className={touched.message && errors.message ? "is-invalid" : ""} rows={5} placeholder="Write your message..." value={values.message} onChange={change("message")} onBlur={blur("message")} aria-invalid={!!(touched.message && errors.message)} />{touched.message && errors.message && <p className="form-error" role="alert">{errors.message}</p>}</div>
+    {status && <div className={`status-banner ${status.type === "error" ? "error" : "success"}`} role={status.type === "error" ? "alert" : "status"}>{status.message}{status.type === "error" && failureHref && <> <a href={failureHref}>Open email draft</a> or email {CONTACT_EMAIL}.</>}</div>}
+    <button className="contact-submit" type="submit" disabled={submitting} aria-busy={submitting}>{submitting ? "Sending…" : "Send Message"}{!submitting && <Send size={16} />}</button>
+  </form>;
+}
 
 /**
  * Purely decorative thin line-art doodle. Renders behind content, never

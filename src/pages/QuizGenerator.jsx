@@ -17,15 +17,338 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { useQuizHistory } from "../context/QuizContext";
-import { SelectField, TextareaField } from "../Components/form/FormField";
-import Modal from "../Components/Modal";
-import ToastStack from "../Components/Toast";
-import { useToast } from "../hooks/useToast";
-import { useStudyMaterial } from "../hooks/useStudyMaterial";
-import { useQuizSession } from "../hooks/useQuizSession";
-import { generateQuizFromText, DIFFICULTIES, QUESTION_TYPES, MAX_CHARS } from "../utils/contentQuiz";
 import "./QuizGenerator.css";
+
+// Local page logic is kept in this file so the project needs no context/hooks folders.
+const QUIZ_HISTORY_KEY = "studysphere.quizAttempts.v1";
+function readStoredArray(key) {
+  try { const value = JSON.parse(window.localStorage.getItem(key) || "[]"); return Array.isArray(value) ? value : []; }
+  catch { return []; }
+}
+function useQuizHistory() {
+  const [attempts, setAttempts] = useState(() => readStoredArray(QUIZ_HISTORY_KEY).filter(a => a && typeof a.id === "string" && Number.isFinite(a.total) && Number.isFinite(a.correct) && a.total > 0));
+  const [storageError, setStorageError] = useState(null);
+  useEffect(() => {
+    try { window.localStorage.setItem(QUIZ_HISTORY_KEY, JSON.stringify(attempts)); setStorageError(null); }
+    catch { setStorageError("Your browser blocked saving. Changes may be lost on refresh."); }
+  }, [attempts]);
+  const recordAttempt = useCallback(({ subject, topic, difficulty, total, correct }) => setAttempts(prev => [{ id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`, subject, topic, difficulty, total, correct, percentage: Math.round(correct / total * 100), completedAt: new Date().toISOString() }, ...prev]), []);
+  return { attempts, storageError, recordAttempt };
+}
+function useStudyMaterial() {
+  const [text, setText] = useState("");
+  const [showError, setShowError] = useState(false);
+  const trimmed = text.trim();
+  const stats = { chars: text.length, words: trimmed ? trimmed.split(/\s+/).length : 0 };
+  const len = trimmed.length;
+  const error = len === 0 ? "Paste some study material to generate a quiz." : len < MIN_CHARS ? `Add a bit more material — at least ${MIN_CHARS} characters (you have ${len}).` : text.length > MAX_CHARS ? `Please keep your material under ${MAX_CHARS.toLocaleString()} characters.` : "";
+  const clear = useCallback(() => { setText(""); setShowError(false); }, []);
+  return { text, setText, stats, error, showError, setShowError, clear };
+}
+function useQuizSession() {
+  const [questions, setQuestions] = useState([]);
+  const [status, setStatus] = useState("idle");
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const begin = useCallback(list => { setQuestions(list); setAnswers(list.map(() => null)); setIndex(0); setStatus("running"); }, []);
+  const select = useCallback(optionIndex => setAnswers(prev => prev.map((a, i) => i === index ? optionIndex : a)), [index]);
+  const goTo = useCallback(i => setIndex(cur => Math.min(Math.max(i, 0), questions.length - 1)), [questions.length]);
+  const next = useCallback(() => goTo(index + 1), [goTo, index]);
+  const prev = useCallback(() => goTo(index - 1), [goTo, index]);
+  const finish = useCallback(() => setStatus("finished"), []);
+  const retake = useCallback(() => begin(questions), [begin, questions]);
+  const reset = useCallback(() => { setQuestions([]); setAnswers([]); setIndex(0); setStatus("idle"); }, []);
+  const unanswered = answers.filter(a => a === null).length;
+  const score = answers.reduce((n, a, i) => n + (a !== null && questions[i]?.options[a]?.correct ? 1 : 0), 0);
+  return { questions, status, index, answers, unanswered, score, begin, select, goTo, next, prev, finish, retake, reset };
+}
+
+// Basic, rule-based quiz builder. NOT AI: it splits pasted notes into sentences
+// and turns them into questions using word frequency and simple patterns.
+// Every question carries the source sentence it came from so answers can be explained.
+
+const MIN_CHARS = 120;
+const MAX_CHARS = 20000;
+const COUNTS = [5, 10];
+const DIFFICULTIES = ["Easy", "Medium", "Hard"];
+const QUESTION_TYPES = ["MCQ", "True/False"];
+
+// Preferred sentence length (in words) per difficulty.
+const RANGES = { Easy: [6, 18], Medium: [10, 28], Hard: [15, 40] };
+// Share of MCQs that may be "which describes X?" definition questions.
+const DEFINITION_SHARE = { Easy: 0.6, Medium: 0.4, Hard: 0.25 };
+
+const STOPWORDS = new Set(
+  ("a an the and or but if then else when while of at by for with about against between into through during before after above below to from up down in out on off over under again further once here there all any both each few more most other some such no nor not only own same so than too very can will just should now is are was were be been being have has had do does did this that these those it its they them their what which who whom whose how why where also may might must shall would could as per via using used use one two many much however therefore thus because while whether").split(" ")
+);
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const clean = (s) => s.replace(/\s+/g, " ").trim();
+const wordCount = (s) => clean(s).split(" ").filter(Boolean).length;
+const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const stem = (w) => w.toLowerCase().replace(/(ing|ed|es|s|ly)$/, "");
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const clip = (s, n = 110) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
+const WORD_RE = /[A-Za-z][A-Za-z'-]{3,}/g;
+
+/** Split notes into clean candidate sentences / lines (unique, 6-40 words, mostly prose). */
+function splitSentences(text) {
+  const protectedText = text
+    .replace(/\r/g, "")
+    .replace(/\b(e\.g|i\.e|vs|etc)\./gi, (m) => m.replace(/\./g, "§"));
+  const seen = new Set();
+  return protectedText
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map((s) => clean(s.replace(/§/g, ".").replace(/^\s*(?:[-*•]|\d+[.)])\s+/, "")))
+    .filter((s) => {
+      const n = wordCount(s);
+      if (n < 6 || n > 40) return false;
+      const letters = (s.match(/[A-Za-z]/g) || []).length;
+      if (letters / s.length < 0.7) return false; // skips code / symbol-heavy lines
+      const key = norm(s);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+function buildFrequency(text) {
+  const freq = new Map();
+  const forms = new Map(); // lower-case word -> { original casing: count }
+  (text.match(WORD_RE) || []).forEach((w) => {
+    const k = w.toLowerCase();
+    if (STOPWORDS.has(k)) return;
+    freq.set(k, (freq.get(k) || 0) + 1);
+    const f = forms.get(k) || {};
+    f[w] = (f[w] || 0) + 1;
+    forms.set(k, f);
+  });
+  // Prefer the casing the author used most (e.g. "JavaScript", "useEffect").
+  const display = new Map([...forms].map(([k, f]) => [k, Object.entries(f).sort((a, b) => b[1] - a[1])[0][0]]));
+  return { freq, display };
+}
+
+/** Rough "shape" of a word so swaps/distractors look like the real answer. */
+function caseClass(w) {
+  if (/[a-z][A-Z]/.test(w)) return "camel";
+  return w[0] === w[0].toUpperCase() ? "cap" : "lower";
+}
+function suffixClass(w) {
+  const l = w.toLowerCase();
+  if (l.endsWith("ing")) return "ing";
+  if (l.endsWith("ed")) return "ed";
+  if (l.endsWith("ly")) return "ly";
+  if (l.endsWith("s") && !l.endsWith("ss")) return "s";
+  return "base";
+}
+
+/** Choose the word to hide / swap in a sentence, based on difficulty. */
+function pickKeyword(sentence, freq, difficulty) {
+  const words = [...new Set(sentence.match(WORD_RE) || [])].filter((w) => !STOPWORDS.has(w.toLowerCase()));
+  const candidates = words
+    .map((w) => ({ w, f: freq.get(w.toLowerCase()) || 1, first: sentence.startsWith(w) }))
+    .filter((c) => !c.first && c.w.length >= 5);
+  if (candidates.length === 0) return null;
+  const score = (c) =>
+    difficulty === "Easy" ? c.f * 3 + c.w.length * 0.3 // common, central terms
+    : difficulty === "Hard" ? c.w.length * 1.2 - c.f * 0.5 // longer, more specific terms
+    : c.f * 2 + c.w.length * 0.5;
+  return candidates.sort((a, b) => score(b) - score(a))[0].w;
+}
+
+/** Wrong-but-plausible options: other terms from the notes that are not in this sentence. */
+function pickDistractors(answer, sentence, ctx, n = 3, strict = false) {
+  const { vocab, difficulty, display } = ctx;
+  const inSentence = new Set((sentence.match(WORD_RE) || []).map(stem));
+  const base = vocab
+    .map((w) => display.get(w) || w)
+    .filter((w) => !inSentence.has(stem(w)) && stem(w) !== stem(answer));
+  const ac = caseClass(answer);
+  const as = suffixClass(answer);
+  let pool = base.filter((w) => caseClass(w) === ac && suffixClass(w) === as);
+  if (pool.length < n && !strict) pool = base.filter((w) => caseClass(w) === ac);
+  if (pool.length < n && !strict) pool = base;
+  if (pool.length < n) return null;
+  const closeness = (w) => Math.abs(w.length - answer.length);
+  // Pool is already ordered by how often the author uses each term, so Easy/T-F swaps use central topic words.
+  const ranked = difficulty === "Easy" || n === 1 ? pool : [...pool].sort((a, b) => closeness(a) - closeness(b));
+  const window = ranked.slice(0, difficulty === "Hard" ? Math.max(n, 5) : Math.max(n, 8));
+  return shuffle(window).slice(0, n);
+}
+
+const blankOut = (sentence, word) => sentence.replace(new RegExp(`\\b${escapeRe(word)}\\b`, "g"), "_____");
+const explain = (sentence) => `From your notes: “${sentence}”`;
+
+function buildCloze(sentence, ctx) {
+  const key = pickKeyword(sentence, ctx.freq, ctx.difficulty);
+  if (!key) return null;
+  const distractors = pickDistractors(key, sentence, ctx);
+  if (!distractors) return null;
+  return {
+    type: "MCQ",
+    q: `Fill in the blank: ${blankOut(sentence, key)}`,
+    options: shuffle([{ text: key, correct: true }, ...distractors.map((text) => ({ text, correct: false }))]),
+    explanation: explain(sentence),
+    source: sentence,
+  };
+}
+
+/** "Term: a definition" lines read naturally as "Term is a definition"; other colon lines are skipped. */
+function toStatement(sentence) {
+  const m = sentence.match(TERM_LINE_RE);
+  if (!m) return sentence;
+  return /^(a|an|the)\s/i.test(m[2]) ? `${clean(m[1])} is ${clean(m[2]).replace(/\.+$/, "")}.` : null;
+}
+
+function buildTrueFalse(rawSentence, ctx, wantFalse) {
+  const sentence = toStatement(rawSentence);
+  if (!sentence) return null;
+  const options = () => [
+    { text: "True", correct: !wantFalse },
+    { text: "False", correct: wantFalse },
+  ];
+  if (!wantFalse) {
+    return { type: "True/False", q: `True or False: ${sentence}`, options: [{ text: "True", correct: true }, { text: "False", correct: false }], explanation: `True — this statement comes directly from your notes: “${sentence}”`, source: sentence };
+  }
+  const key = pickKeyword(sentence, ctx.freq, ctx.difficulty);
+  const swap = key && pickDistractors(key, sentence, ctx, 1, true);
+  if (!swap) return null;
+  const changed = sentence.replace(new RegExp(`\\b${escapeRe(key)}\\b`, "g"), swap[0]);
+  if (changed === sentence) return null;
+  return { type: "True/False", q: `True or False: ${changed}`, options: options(), explanation: `False — “${swap[0]}” was substituted for “${key}”. Your notes say: “${sentence}”`, source: sentence };
+}
+
+const DEFINITION_RE = /^(.{2,60}?)\s+(?:(?:is|are)\s+(?:defined as\s+)?(?:the|a|an)\s+|refers to\s+(?:the\s+|a\s+|an\s+)?|means\s+(?:the\s+|a\s+|an\s+)?)(.{15,})$/i;
+const TERM_LINE_RE = /^([A-Za-z][^:\-–—]{1,50}?)\s*[:\-–—]\s+(.{15,})$/;
+
+function extractDefinitions(text, sentences) {
+  const out = [];
+  text.split(/\n+/).forEach((line) => {
+    const t = clean(line.replace(/^\s*(?:[-*•]|\d+[.)])\s+/, ""));
+    const m = t.match(TERM_LINE_RE);
+    if (m && wordCount(m[1]) <= 6) out.push({ term: clean(m[1]), definition: clean(m[2]).replace(/\.+$/, ""), source: t });
+  });
+  sentences.forEach((s) => {
+    const m = s.match(DEFINITION_RE);
+    if (m && wordCount(m[1]) <= 6 && !/^(it|this|that|there|which|they)$/i.test(m[1].trim())) {
+      out.push({ term: clean(m[1]).replace(/^(a|an|the)\s+/i, ""), definition: clean(m[2]).replace(/\.+$/, ""), source: s });
+    }
+  });
+  const seen = new Set();
+  return out.filter((d) => {
+    const k = d.term.toLowerCase();
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+function buildDefinition(def, defs, difficulty) {
+  const others = defs.filter((o) => o.term !== def.term && norm(clip(o.definition)) !== norm(clip(def.definition)));
+  if (others.length < 3) return null;
+  const ranked = [...others].sort((a, b) => Math.abs(a.definition.length - def.definition.length) - Math.abs(b.definition.length - def.definition.length));
+  const picks = difficulty === "Easy" ? shuffle(others).slice(0, 3) : shuffle(ranked.slice(0, Math.max(3, 5))).slice(0, 3);
+  return {
+    type: "MCQ",
+    q: `Which of the following best describes “${def.term}”?`,
+    options: shuffle([{ text: clip(def.definition), correct: true }, ...picks.map((o) => ({ text: clip(o.definition), correct: false }))]),
+    explanation: explain(def.source),
+    source: def.source,
+  };
+}
+
+/**
+ * Build up to `count` questions from `text`.
+ * Returns { questions, notes } where notes explains any shortfall to the user.
+ */
+function generateQuizFromText(text, { count = 5, difficulty = "Medium", type = "MCQ" } = {}) {
+  const trimmed = text.trim();
+  const sentences = splitSentences(trimmed);
+  const { freq, display } = buildFrequency(trimmed);
+  const vocab = [...freq.entries()].filter(([w]) => w.length >= 5).sort((a, b) => b[1] - a[1]).map(([w]) => w);
+  const ctx = { freq, vocab, difficulty, display };
+
+  const [lo, hi] = RANGES[difficulty] ?? RANGES.Medium;
+  const inRange = shuffle(sentences.filter((s) => wordCount(s) >= lo && wordCount(s) <= hi));
+  const outRange = shuffle(sentences.filter((s) => wordCount(s) < lo || wordCount(s) > hi));
+
+  const questions = [];
+  const used = new Set();
+  const seenQ = new Set();
+  const add = (item, sourceKeys) => {
+    if (!item || seenQ.has(norm(item.q))) return false;
+    seenQ.add(norm(item.q));
+    sourceKeys.forEach((k) => used.add(k));
+    questions.push(item);
+    return true;
+  };
+  let relaxed = 0;
+
+  if (type === "MCQ") {
+    const defs = extractDefinitions(trimmed, sentences);
+    if (defs.length >= 4) {
+      const limit = Math.max(1, Math.floor(count * DEFINITION_SHARE[difficulty]));
+      for (const d of shuffle(defs)) {
+        if (questions.length >= limit) break;
+        if (used.has(norm(d.source))) continue;
+        add(buildDefinition(d, defs, difficulty), [norm(d.source)]);
+      }
+    }
+    for (const [pool, isRelaxed] of [[inRange, false], [outRange, true]]) {
+      for (const s of pool) {
+        if (questions.length >= count) break;
+        if (used.has(norm(s))) continue;
+        if (add(buildCloze(s, ctx), [norm(s)]) && isRelaxed) relaxed++;
+      }
+    }
+  } else {
+    // Roughly half true, half false, in random order.
+    const flags = shuffle(Array.from({ length: count }, (_, i) => i % 2 === 1));
+    for (const [pool, isRelaxed] of [[inRange, false], [outRange, true]]) {
+      for (const s of pool) {
+        if (questions.length >= count) break;
+        if (used.has(norm(s))) continue;
+        const wantFalse = flags[questions.length];
+        const item = buildTrueFalse(s, ctx, wantFalse) || (wantFalse ? buildTrueFalse(s, ctx, false) : null);
+        if (add(item, [norm(s)]) && isRelaxed) relaxed++;
+      }
+    }
+  }
+
+  const final = shuffle(questions).slice(0, count);
+  const notes = [];
+  if (final.length > 0 && final.length < count) {
+    notes.push(`Your material only supports ${final.length} valid question${final.length === 1 ? "" : "s"} of the ${count} requested, so that is how many were generated. Add more full-sentence notes for more.`);
+  }
+  if (final.length > 0 && relaxed > 0) {
+    notes.push(`${relaxed} question${relaxed === 1 ? "" : "s"} came from sentences that don’t fully match the “${difficulty}” length level because there weren’t enough that did.`);
+  }
+  return { questions: final, notes };
+}
+
+
+
+function TextareaField({ label, icon: Icon, error, className = "field", inputClassName = "", ref: inputRef, ...props }) {
+  const id = props.id;
+  return <div className={className}>
+    {label && <label htmlFor={id}>{Icon && <Icon size={14} />} {label}</label>}
+    <textarea ref={inputRef} id={id} className={`${inputClassName} ${error ? "is-invalid" : ""}`.trim()} aria-invalid={error ? "true" : "false"} {...props} />
+    {error && <p className="form-error" role="alert">{error}</p>}
+  </div>;
+}
+function SelectField({ label, icon: Icon, options, className = "field", ...props }) {
+  return <div className={className}><label htmlFor={props.id}>{Icon && <Icon size={14} />} {label}</label>
+    <select className="select-input" {...props}>{options.map((o) => { const value = typeof o === "string" ? o : o.value; const text = typeof o === "string" ? o : o.label; return <option key={value} value={value}>{text}</option>; })}</select>
+  </div>;
+}
 
 const HISTORY_SUBJECT = "My Content";
 const GENERATE_DELAY_MS = 500; // brief pause so the loading state is visible
@@ -329,7 +652,8 @@ function SelfTestStudio() {
   const { recordAttempt, storageError } = useQuizHistory();
   const material = useStudyMaterial();
   const session = useQuizSession();
-  const { toasts, showToast, dismissToast } = useToast();
+  const [notice, setNotice] = useState(null);
+  const showToast = (message, type = "success") => setNotice({ message, type });
 
   const [settings, setSettings] = useState({ count: 5, difficulty: "Medium", type: "MCQ" });
   const [createMode, setCreateMode] = useState("content");
@@ -524,22 +848,15 @@ function SelfTestStudio() {
         </div>
       </div>
 
-      {confirm && (
-        <Modal
-          title={confirm.title}
-          onClose={closeConfirm}
-          footer={
-            <>
-              <button type="button" className="todo-ghost" onClick={closeConfirm}>Cancel</button>
-              <button type="button" className="add-task-btn" onClick={confirm.onConfirm}>{confirm.confirmLabel}</button>
-            </>
-          }
-        >
-          <p>{confirm.body}</p>
-        </Modal>
-      )}
+      {notice && <div className={`status-banner ${notice.type === "error" ? "error" : "success"}`} role={notice.type === "error" ? "alert" : "status"}>
+        <span>{notice.message}</span> <button type="button" className="todo-ghost" onClick={() => setNotice(null)}>Dismiss</button>
+      </div>}
 
-      <ToastStack toasts={toasts} onDismiss={dismissToast} />
+      {confirm && <section className="glass-card quiz-confirm-inline" role="alertdialog" aria-label={confirm.title}>
+        <h3>{confirm.title}</h3><p>{confirm.body}</p>
+        <div className="confirm-actions"><button type="button" className="todo-ghost" onClick={closeConfirm}>Cancel</button>
+        <button type="button" className="add-task-btn" onClick={confirm.onConfirm}>{confirm.confirmLabel}</button></div>
+      </section>}
     </div>
   );
 }

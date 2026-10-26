@@ -1,7 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Pencil, Trash2, Check, X, ListTodo, CheckCircle2 } from "lucide-react";
-import { useTodos } from "../context/TodoContext";
 import "./Todo.css";
+
+const TODO_STORAGE_KEY = "studysphere.todos.v1";
+function readSavedTasks() {
+  try { const parsed = JSON.parse(window.localStorage.getItem(TODO_STORAGE_KEY) || "[]"); return Array.isArray(parsed) ? parsed.filter(t => t && typeof t.id === "string" && typeof t.text === "string" && typeof t.completed === "boolean") : []; }
+  catch { return []; }
+}
+function useTodos() {
+  const [tasks, setTasks] = useState(readSavedTasks);
+  const [storageError, setStorageError] = useState(null);
+  useEffect(() => {
+    try { window.localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(tasks)); setStorageError(null); }
+    catch { setStorageError("Your browser blocked saving. Changes will be lost on refresh."); }
+  }, [tasks]);
+  const addTask = (text, category) => setTasks(prev => [{ id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`, text, category: category || "", completed: false, createdAt: new Date().toISOString() }, ...prev]);
+  const toggleTask = id => setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  const editTask = (id, text, category) => setTasks(prev => prev.map(t => t.id === id ? { ...t, text, category } : t));
+  const deleteTask = id => setTasks(prev => prev.filter(t => t.id !== id));
+  const clearCompleted = () => setTasks(prev => prev.filter(t => !t.completed));
+  const clearAll = () => setTasks([]);
+  const completed = tasks.filter(t => t.completed).length;
+  return { tasks, counts: { total: tasks.length, completed, active: tasks.length - completed }, storageError, addTask, toggleTask, editTask, deleteTask, clearCompleted, clearAll };
+}
+
 
 /**
  * Shared page header: title, optional icon/subtitle, and action buttons.

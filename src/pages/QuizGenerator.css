@@ -319,3 +319,10 @@
 .self-test .quiz-review li.skip svg { color: var(--text-muted); flex-shrink: 0; }
 .self-test .st-explain { font-style: italic; color: var(--text-muted); }
 @media (max-width: 700px) { .self-test .st-selects { grid-template-columns: 1fr; } }
+
+/* Inline feedback and confirmation replace the old toast/modal components. */
+.quiz-page > .status-banner { margin: 14px 0; }
+.quiz-confirm-inline { margin: 16px 0; padding: 18px; border: 1px solid var(--border-subtle); }
+.quiz-confirm-inline h3 { margin: 0 0 8px; }
+.quiz-confirm-inline p { margin: 0 0 14px; color: var(--text-secondary); }
+.quiz-confirm-inline .confirm-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
